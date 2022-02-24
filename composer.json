@@ -1,0 +1,44 @@
+{
+  "name": "alnv/frontend-file-picker-bundle",
+  "type": "contao-bundle",
+  "license": "proprietary",
+  "description": "",
+  "homepage": "https://alexandernaumov.de/",
+  "authors": [
+    {
+      "name": "Alexander Naumov",
+      "homepage": "https://alexandernaumov.de",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "email": "mail@alexandernaumov.de",
+    "wiki": "https://alexandernaumov.de/"
+  },
+  "autoload": {
+    "psr-4": {
+      "Alnv\\ContaoFrontendFilePickerBundle\\": "src/"
+    },
+    "classmap": [
+      "src/Resources/contao/"
+    ],
+    "exclude-from-classmap": [
+      "src/Resources/contao/config/"
+    ]
+  },
+  "require": {
+    "php":">=7.3",
+    "contao/core-bundle":"~4.9"
+  },
+  "config": {
+    "preferred-install": "dist"
+  },
+  "extra": {
+    "contao": {
+      "sources": {
+        "": "system/modules/contao-frontend-file-picker-bundle"
+      }
+    },
+    "contao-manager-plugin": "Alnv\\ContaoFrontendFilePickerBundle\\ContaoManager\\Plugin"
+  }
+}

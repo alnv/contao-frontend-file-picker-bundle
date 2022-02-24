@@ -1,0 +1,3 @@
+filepicker:
+  resource: "@AlnvContaoFrontendFilePickerBundle/Controller"
+  type: annotation

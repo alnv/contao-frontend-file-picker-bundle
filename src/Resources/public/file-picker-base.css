@@ -1,0 +1,127 @@
+.fp-selection,
+.fp-files {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+}
+.fp-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, .7);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+}
+.fp-modal .fb-close-modal {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.fp-modal .fp-files-container {
+    position: relative;
+    background: #fff;
+    padding: 1rem;
+    width: 90%;
+    max-width: 1024px;
+    margin: 0 auto;
+    overflow-y: scroll;
+    max-height: 90vh;
+}
+.fp-loader {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(255,255,255, .8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.fp-selection {
+    padding: 0;
+    background: none;
+}
+.fp-file {
+    position: relative;
+    width: 49%;
+    margin-right: 2%;
+    margin-bottom: .9rem;
+}
+.fp-file .checkbox {
+    background: #fff;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+.fp-file:nth-child(2n) {
+    margin-right: 0;
+}
+.fp-file label {
+    width: auto;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    float: none;
+}
+.fp-button button {
+    width: auto;
+    display: inline-block;
+    cursor: pointer;
+}
+.fb-delete-file {
+    display: block;
+}
+.fp-icon {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+@media only screen and (min-width: 500px) {
+    .fp-file {
+        width: 32%;
+        margin-right: 2%;
+    }
+    .fp-file:nth-child(2n) {
+        margin-right: 2%;
+    }
+    .fp-file:nth-child(3n) {
+        margin-right: 0;
+    }
+}
+@media only screen and (min-width: 600px) {
+    .fp-file {
+        width: 24%;
+        margin-right: 1.25%;
+    }
+    .fp-file:nth-child(2n) {
+        margin-right: 1.25%;
+    }
+    .fp-file:nth-child(3n) {
+        margin-right: 1.25%;
+    }
+    .fp-file:nth-child(4n) {
+        margin-right: 0;
+    }
+}
+@media only screen and (min-width: 768px) {
+    .fp-file {
+        width: 19%;
+    }
+    .fp-file:nth-child(2n) {
+        margin-right: 1.2%;
+    }
+    .fp-file:nth-child(3n) {
+        margin-right: 1.2%;
+    }
+    .fp-file:nth-child(4n) {
+        margin-right: 1.2%;
+    }
+    .fp-file:nth-child(5n) {
+        margin-right: 0;
+    }
+}
