@@ -21,6 +21,7 @@
         </div>
         <div class="fp-loader" v-if="loader"><img src="/system/themes/flexible/icons/loading.svg" alt=""></div>
     </draggable>
+    <?php if (!$this->selectionView): ?>
     <div class="fp-button">
         <button @click="openPicker" class="fb-select-files fp-button"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerSelectButton'] ?></span></button>
     </div>
@@ -40,6 +41,7 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
     <div class="fp-dropzone">
         <div class="dropzone"><div class="dz-message"><?= $GLOBALS["TL_LANG"]["MSC"]["dropzoneDzMessage"] ?></div></div>
         <p class="error" v-if="uploadError">{{ uploadError }}</p>
@@ -84,7 +86,7 @@
                             emulateJSON: true,
                             'Content-Type': 'application/x-www-form-urlencoded'
                         }
-                    ).then(function(res) {
+                    ).then(function() {
                         this.fetchData();
                         this.fetchSelections();
                     }.bind(this));
@@ -101,10 +103,13 @@
                         acceptedFiles: "<?= (new \Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields())->convertExtensions($this->extensions)  ?>",
                         <?php endif; ?>
                         parallelUploads: 1,
-                        maxFilesize: 10,
+                        <?php if ($strSize =\Config::get('maxFileSize')): ?>
+                        maxFilesize: <?= ((int) $strSize / 1000) ?>,
+                        <?php endif; ?>
                         timeout: 0,
                         params: {
-                            name: '<?= $this->name ?>'
+                            cid: "<?= $this->catalogId?:'' ?>",
+                            name: "<?= $this->name?:'' ?>"
                         }
                     };
                     let self = this;
@@ -192,6 +197,7 @@
             },
             mounted: function () {
                 this.setDropzone();
+                <?php if (!$this->selectionView): ?>
                 this.$refs['filePicker'].querySelector('.fp-modal').addEventListener('click', function() {
                     objState.modal = false;
                 });
@@ -201,6 +207,7 @@
                 setInterval(function () {
                     this.fetchData();
                 }.bind(this), 10000);
+                <?php endif; ?>
             }
         })
     })();

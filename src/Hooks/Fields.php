@@ -30,6 +30,8 @@ class Fields {
                 $arrFields[$strField]['_dcFormat']['eval']['catalogId'] = $arrCatalog['id'];
                 $arrFields[$strField]['_dcFormat']['eval']['multiple'] = (bool) $arrField['multiple'];
                 $arrFields[$strField]['_dcFormat']['eval']['extensions'] = $arrField['extensions'];
+                $arrFields[$strField]['_dcFormat']['eval']['buttons'] = \StringUtil::deserialize($arrField['fpButtons'], true);
+                $arrFields[$strField]['_dcFormat']['eval']['selectionView'] = (bool) $arrField['fpSelectionView'];
             }
         }
     }

@@ -26,19 +26,23 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
         $objUploadDir = $this->getUserDir();
 
         if (!$objUploadDir) {
-            return new JsonResponse($arrResponse);
+            header("HTTP/1.0 400 Bad Request");
+            echo $GLOBALS['TL_LANG']['MSC']['uploadGeneralError'];
+            exit;
         }
 
         $arrUpload = $this->getUploadSettings();
-        $arrUpload['eval']['uploadFolder'] = $objUploadDir ? \StringUtil::binToUuid($objUploadDir->uuid) : '';
+        $arrUpload['eval']['uploadFolder'] = \StringUtil::binToUuid($objUploadDir->uuid);
 
         $arrAttribute = \FormFileUpload::getAttributesFromDca($arrUpload, \Input::post('name'), null, \Input::post('name'));
         $objUpload = new \FormFileUpload($arrAttribute);
         $objUpload->validate();
 
         if ($objUpload->hasErrors()) {
-            $arrResponse['success'] = false;
-            $arrResponse['error'] = $objUpload->getErrorAsString() ?: $GLOBALS['TL_LANG']['MSC']['uploadGeneralError'];
+            header("HTTP/1.0 400 Bad Request");
+            echo $objUpload->getErrorAsString() ?: $GLOBALS['TL_LANG']['MSC']['uploadGeneralError'];
+            exit;
+
         } else {
             $arrResponse['success'] = true;
             $arrResponse['file'] = $this->getUploads();
@@ -150,13 +154,15 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
 
     protected function getUploadSettings() {
 
+        $arrField = $this->getSettings();
+
         return [
             'inputType' => 'fileTree',
             'eval' => [
                 'mandatory' => true,
                 'storeFile' => true,
                 'doNotOverwrite' => true,
-                'extensions' => \Config::get('uploadTypes')
+                'extensions' => $arrField['extensions'] ?: \Config::get('uploadTypes')
             ]
         ];
     }

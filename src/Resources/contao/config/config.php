@@ -1,5 +1,6 @@
 <?php
 
+$GLOBALS['TL_HOOKS']['catalogManagerRenderCatalog'][] = ['Alnv\ContaoFrontendFilePickerBundle\Hooks\Catalog', 'render'];
 $GLOBALS['TL_HOOKS']['catalogManagerFrontendEditingOnSave'][] = ['Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields', 'prepareData'];
 $GLOBALS['TL_HOOKS']['catalogManagerInitializeFrontendEditing'][] = ['Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields', 'catalogManagerInitializeFrontendEditing'];
 

@@ -18,9 +18,10 @@
     [
         'id' => $this->id,
         'name' => $this->name,
-        'buttons' => ['delete'],
+        'buttons' => $this->buttons,
         'catalogId' => $this->catalogId,
         'extensions' => $this->extensions ?: '',
+        'selectionView' => $this->selectionView,
         'values' => \StringUtil::deserialize($this->varValue, true),
         'multiple' => (bool) $this->multiple
     ]
