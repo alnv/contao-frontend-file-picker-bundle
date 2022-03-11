@@ -4,6 +4,20 @@ namespace Alnv\ContaoFrontendFilePickerBundle\Hooks;
 
 class Fields {
 
+    public function setDcFormatAttributes($arrDcField, $arrField) {
+
+        if ($arrField['type'] == 'feFilePicker') {
+            $arrDcField['eval']['multiple'] = (bool) $arrField['multiple'];
+            $arrDcField['eval']['fieldType'] = $arrField['multiple'] ? 'checkbox' : 'radio';
+            $arrDcField['eval']['files'] = true;
+            if ($arrField['extensions']) {
+                $arrDcField['eval']['extensions'] = $arrField['extensions'];
+            }
+        }
+
+        return $arrDcField;
+    }
+
     public function prepareData($arrValues, $strAct, $arrCatalog, $arrFields) {
 
         foreach ($arrFields as $strField => $arrField) {
