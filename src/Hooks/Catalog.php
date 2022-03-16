@@ -23,9 +23,11 @@ class Catalog {
                     $arrFile['meta'] = \StringUtil::deserialize($arrFile['meta'], true);
 
                     if (!empty($arrFile['meta']) && is_array($arrFile['meta'])) {
-                        $arrFile['meta'] = array_map(function ($strValue) {
-                            return \Controller::replaceInsertTags($strValue);
-                        }, $arrFile['meta'][$GLOBALS['TL_LANGUAGE']]);
+                        if (isset($arrFile['meta'][$GLOBALS['TL_LANGUAGE']])) {
+                            $arrFile['meta'] = array_map(function ($strValue) {
+                                return \Controller::replaceInsertTags($strValue);
+                            }, $arrFile['meta'][$GLOBALS['TL_LANGUAGE']]);
+                        }
                     }
 
                     $objFileClass = new \File($arrFile['path']);
