@@ -2,6 +2,5 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-    public: true
   Alnv\ContaoFrontendFilePickerBundle\Controller\FilePickerController:
     public: true

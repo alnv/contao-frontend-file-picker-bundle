@@ -5,7 +5,9 @@ $GLOBALS['TL_HOOKS']['catalogManagerFrontendEditingOnSave'][] = ['Alnv\ContaoFro
 $GLOBALS['TL_HOOKS']['catalogManagerSetDcFormatAttributes'][] = ['Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields', 'setDcFormatAttributes'];
 $GLOBALS['TL_HOOKS']['catalogManagerInitializeFrontendEditing'][] = ['Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields', 'catalogManagerInitializeFrontendEditing'];
 
-$GLOBALS['TL_CATALOG_MANAGER']['FIELD_TYPE_CONVERTER']['feFilePicker'] = 'fileTree';
+if (isset($GLOBALS['TL_CATALOG_MANAGER'])) {
+    $GLOBALS['TL_CATALOG_MANAGER']['FIELD_TYPE_CONVERTER']['feFilePicker'] = 'fileTree';
+    $GLOBALS['TL_CATALOG_MANAGER']['FIELD_TYPES']['feFilePicker'] = ['dcType' => 'dcPaletteField'];
+}
 
-$GLOBALS['TL_CATALOG_MANAGER']['FIELD_TYPES']['feFilePicker'] = ['dcType' => 'dcPaletteField'];
 $GLOBALS['TL_FFL']['filePicker'] = 'Alnv\ContaoFrontendFilePickerBundle\Forms\FormFilePicker';

@@ -30,13 +30,16 @@
             <button class="fp-button fb-close-modal" @click="openPicker"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerCloseModal'] ?></span></button>
             <div class="fp-files">
                 <div v-for="(file, index) in data" class="fp-file">
+                    <template v-if="!maxSize || (maxSize > selections.length || isSelected(file.uuid))">
                     <span v-if="multiple" class="checkbox"><input type="checkbox" :id="'id_file_<?= $this->id ?>_'+index" :value="file.uuid" v-model="values"><label :for="'id_file_<?= $this->id ?>_'+index"><?= $GLOBALS['TL_LANG']['MSC']['filePickerInputLabel'] ?></label></span>
                     <span v-if="!multiple" class="radio"><input type="radio" :id="'id_file_<?= $this->id ?>_'+index" :value="file.uuid" v-model="values[0]"><label :for="'id_file_<?= $this->id ?>_'+index"><?= $GLOBALS['TL_LANG']['MSC']['filePickerInputLabel'] ?></label></span>
+                    </template>
                     <label :for="'id_file_<?= $this->id ?>_'+index">
                         <img v-if="file.thumb" :src="file.thumb" :alt="file.name" class="fp-thumb">
                         <span v-else><img v-if="file.icon" :src="file.icon" :alt="file.name" class="fp-icon"><span class="fp-name">{{ file.name }} ({{ file.filesize }})</span></span>
                     </label>
                     <button v-if="buttons.includes('delete')" class="fb-delete-file fp-button" @click="deleteFile(file, false, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerDeleteFile'] ?></span></button>
+
                 </div>
             </div>
         </div>
@@ -54,6 +57,7 @@
             loader: false,
             dropzone: null,
             uploadError: '',
+            maxSize: <?= $this->maxSize ?>,
             blockFetchSections: false,
             buttons: <?= json_encode(($this->buttons ?: [])) ?>,
             multiple: <?= $this->multiple ? 'true' : 'false' ?>,
@@ -91,6 +95,14 @@
                         this.fetchSelections();
                     }.bind(this));
                 },
+                isSelected: function (uuid) {
+                    for (let i=0;i<this.selections.length;i++) {
+                        if (this.selections[i]['uuid'] === uuid) {
+                            return true;
+                        }
+                    }
+                    return false;
+                },
                 setDropzone: function () {
                     if (typeof Dropzone === 'undefined') {
                         return null;
@@ -108,7 +120,7 @@
                         <?php endif; ?>
                         timeout: 0,
                         params: {
-                            cid: "<?= $this->catalogId?:'' ?>",
+                            cid: "<?= $this->fieldId?:'' ?>",
                             name: "<?= $this->name?:'' ?>"
                         }
                     };
@@ -145,7 +157,7 @@
                     this.$http.post('/file-picker/fetch-selections',
                         {
                             values: this.values,
-                            cid: "<?= $this->catalogId?:'' ?>",
+                            cid: "<?= $this->fieldId?:'' ?>",
                             name: "<?= $this->name?:'' ?>"
                         },
                         {
@@ -160,7 +172,7 @@
                 fetchData: function () {
                     this.$http.post('/file-picker/fetch-data',
                         {
-                            cid: "<?= $this->catalogId?:'' ?>",
+                            cid: "<?= $this->fieldId?:'' ?>",
                             name: "<?= $this->name?:'' ?>"
                         },
                         {

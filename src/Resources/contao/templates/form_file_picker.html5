@@ -14,13 +14,20 @@
 <?php if ($this->hasErrors()): ?>
     <p class="error"><?= $this->getErrorAsString() ?></p>
 <?php endif; ?>
+<?php if ($varValue = \Input::post($this->name)) {
+    $varValue = (new \Alnv\ContaoFrontendFilePickerBundle\Forms\FormFilePicker())->getValue($varValue);
+    if (!empty($varValue)) {
+        $this->varValue = $varValue;
+    }
+} ?>
 <?= (new \Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker(
     [
         'id' => $this->id,
         'name' => $this->name,
         'buttons' => $this->buttons,
-        'catalogId' => $this->catalogId,
+        'fieldId' => $this->catalogId ?: $this->id,
         'extensions' => $this->extensions ?: '',
+        'maxSize' => $this->mSize ?: 0,
         'selectionView' => $this->selectionView,
         'values' => \StringUtil::deserialize($this->varValue, true),
         'multiple' => (bool) $this->multiple

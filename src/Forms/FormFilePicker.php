@@ -10,6 +10,16 @@ class FormFilePicker extends \Widget {
 
     protected function validator($varInput) {
 
+        return $this->getValue($varInput);
+    }
+
+    public function generate() {
+
+        //
+    }
+
+    public function getValue($varInput) {
+
         if (is_string($varInput) && $varInput) {
             $varInput = json_decode(\StringUtil::decodeEntities($varInput));
         }
@@ -19,10 +29,5 @@ class FormFilePicker extends \Widget {
         }
 
         return $varInput;
-    }
-
-    public function generate() {
-
-        //
     }
 }

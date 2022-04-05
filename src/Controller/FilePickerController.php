@@ -83,15 +83,19 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
 
     protected function getSettings() {
 
-        if (!\Database::getInstance()->tableExists('tl_catalog')) {
-            return [];
-        }
-
         if (!\Input::post('cid') || !\Input::post('name')) {
             return [];
         }
 
-        $objField = \Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE pid=? AND fieldname=?')->limit(1)->execute(\Input::post('cid'), \Input::post('name'));
+        $objField = null;
+
+        if (\Database::getInstance()->tableExists('tl_catalog') && \Database::getInstance()->fieldExists('fieldname', 'tl_catalog')) {
+            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE pid=? AND fieldname=?')->limit(1)->execute(\Input::post('cid'), \Input::post('name'));
+        }
+
+        if (!$objField || !$objField->numRows) {
+            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_form_field WHERE id=?')->limit(1)->execute(\Input::post('cid'));
+        }
 
         if (!$objField->numRows) {
             return [];
@@ -100,6 +104,7 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
         return [
             'multiple' => (bool) $objField->multiple,
             'extensions' => $objField->extensions,
+            'maxSize' => $objField->mSize?:0
         ];
     }
 
