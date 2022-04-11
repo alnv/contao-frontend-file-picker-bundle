@@ -115,8 +115,8 @@
                         acceptedFiles: "<?= (new \Alnv\ContaoFrontendFilePickerBundle\Hooks\Fields())->convertExtensions($this->extensions)  ?>",
                         <?php endif; ?>
                         parallelUploads: 1,
-                        <?php if ($strSize =\Config::get('maxFileSize')): ?>
-                        maxFilesize: <?= ((int) $strSize / 1000) ?>,
+                        <?php if ($strSize = \Config::get('maxFileSize')): ?>
+                        maxFilesize: <?= floatval($strSize / 1000000) ?>,
                         <?php endif; ?>
                         timeout: 0,
                         params: {
