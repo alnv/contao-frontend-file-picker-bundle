@@ -78,6 +78,7 @@
 }
 .fb-delete-file {
     display: block;
+    width: 100%;
 }
 .fp-icon {
     width: 200px;
@@ -85,10 +86,12 @@
     object-fit: contain;
 }
 .fp-drag {
-    cursor: move;
     cursor: grab;
     cursor: -moz-grab;
     cursor: -webkit-grab;
+}
+.dropzone .dz-preview.dz-image-preview {
+    background: none;
 }
 img.fp-thumb {
     width: 100%;

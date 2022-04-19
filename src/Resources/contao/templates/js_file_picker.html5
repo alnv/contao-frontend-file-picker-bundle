@@ -39,7 +39,6 @@
                         <span v-else><img v-if="file.icon" :src="file.icon" :alt="file.name" class="fp-icon"><span class="fp-name">{{ file.name }} ({{ file.filesize }})</span></span>
                     </label>
                     <button v-if="buttons.includes('delete')" class="fb-delete-file fp-button" @click="deleteFile(file, false, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerDeleteFile'] ?></span></button>
-
                 </div>
             </div>
         </div>
@@ -139,6 +138,13 @@
                             if (objResponse.file.uuid) {
                                 self.addUploadToValues(objResponse.file.uuid)
                             }
+                        }
+                    });
+                    this.dropzone.on("addedfile", function(file, fileurl) {
+                        if (file.previewElement) {
+                            file.previewElement.addEventListener('click', function () {
+                                objState.dropzone.removeFile(file);
+                            })
                         }
                     });
                 },
