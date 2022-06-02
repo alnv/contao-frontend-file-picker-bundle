@@ -10,6 +10,7 @@ class Fields {
             $arrDcField['eval']['multiple'] = (bool) $arrField['multiple'];
             $arrDcField['eval']['fieldType'] = $arrField['multiple'] ? 'checkbox' : 'radio';
             $arrDcField['eval']['files'] = true;
+            $arrDcField['eval']['isDownloads'] = true;
             if ($arrField['extensions']) {
                 $arrDcField['eval']['extensions'] = $arrField['extensions'];
             }
