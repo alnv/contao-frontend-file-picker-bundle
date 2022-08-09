@@ -47,6 +47,8 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
             $arrResponse['success'] = true;
             $arrResponse['file'] = $this->getUploads();
         }
+        
+        unset($_SESSION['FILES'][\Input::post('name')]);
 
         return new JsonResponse($arrResponse);
     }
