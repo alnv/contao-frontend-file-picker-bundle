@@ -1,5 +1,8 @@
 <?php
 
+$GLOBALS['TL_LANG']['MSC']['filePickerErrorNoMember'] = 'Bitte melden Sie sich an, um die Dateiverwaltung nutzen zu können.';
+$GLOBALS['TL_LANG']['MSC']['filePickerErrorNoHomeDir'] = 'Es wurde kein Home-Verzeichnis ausgewählt. Bitte prüfen Sie Ihre Mitgliedereinstellungen (Home-Verzeichnis).';
+
 $GLOBALS['TL_LANG']['MSC']['filePickerCloseModal'] = 'Schließen';
 $GLOBALS['TL_LANG']['MSC']['filePickerSelectButton'] = 'Auswahl ändern';
 $GLOBALS['TL_LANG']['MSC']['filePickerDeleteFile'] = 'Datei löschen';

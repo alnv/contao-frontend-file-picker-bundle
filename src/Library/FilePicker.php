@@ -18,12 +18,12 @@ class FilePicker {
 
         $objMember = \FrontendUser::getInstance();
         if (!$objMember->id) {
-            return null;
+            return $GLOBALS['TL_LANG']['MSC']['filePickerErrorNoMember'];
         }
 
         $objHomeDir = \FilesModel::findByUuid($objMember->homeDir);
         if (!$objHomeDir) {
-            return null;
+            return $GLOBALS['TL_LANG']['MSC']['filePickerErrorNoHomeDir'];
         }
 
         $arrFiles = [];
