@@ -142,13 +142,13 @@ class FilePicker {
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'dropzone.min.js');
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'vuedraggable.min.js');
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'vue-resource.min.js');
-        $GLOBALS['TL_HEAD'][] = '<script src="'.$objCombiner->getCombinedFile().'"></script>';
+        $GLOBALS['TL_HEAD']['file_picker_libs'] = '<script src="'.$objCombiner->getCombinedFile().'"></script>';
 
         $objCombiner = new \Combiner();
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'basic.min.css');
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'dropzone.min.css');
         $objCombiner->add('/bundles/alnvcontaofrontendfilepicker/' . 'file-picker-base.css');
-        $GLOBALS['TL_HEAD'][] = '<link href="'.$objCombiner->getCombinedFile().'" rel="stylesheet"/>';
+        $GLOBALS['TL_HEAD']['file_picker_css'] = '<link href="'.$objCombiner->getCombinedFile().'" rel="stylesheet"/>';
     }
 
     protected function createHomeDir($strHomeDir, $strUserDir) {
