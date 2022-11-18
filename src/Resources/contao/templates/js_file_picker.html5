@@ -17,17 +17,17 @@
         <div v-for="(file, index) in selections" :key="file.uuid" class="fp-file">
             <img v-if="file.thumb" :src="file.thumb" :alt="file.name" class="fp-thumb fp-drag">
             <span v-else><img v-if="file.icon" :src="file.icon" :alt="file.name" class="fp-icon fp-drag"><span class="fp-name">{{ file.name }} ({{ file.filesize }})</span></span>
-            <button class="fb-delete-file fp-button" @click="deleteFile(file, true, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerRemoveFile'] ?></span></button>
+            <button type="button" class="fb-delete-file fp-button" @click="deleteFile(file, true, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerRemoveFile'] ?></span></button>
         </div>
         <div class="fp-loader" v-if="loader"><img src="/system/themes/flexible/icons/loading.svg" alt=""></div>
     </draggable>
     <?php if (!$this->selectionView): ?>
     <div class="fp-button">
-        <button @click="openPicker" class="fb-select-files fp-button"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerSelectButton'] ?></span></button>
+        <button type="button" @click="openPicker" class="fb-select-files fp-button"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerSelectButton'] ?></span></button>
     </div>
     <div class="fp-modal" v-show="modal">
         <div class="fp-files-container">
-            <button class="fp-button fb-close-modal" @click="openPicker"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerCloseModal'] ?></span></button>
+            <button type="button" class="fp-button fb-close-modal" @click="openPicker"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerCloseModal'] ?></span></button>
             <div class="fp-files">
                 <div v-for="(file, index) in data" class="fp-file">
                     <template v-if="!maxSize || (maxSize > selections.length || isSelected(file.uuid))">
@@ -38,7 +38,7 @@
                         <img v-if="file.thumb" :src="file.thumb" :alt="file.name" class="fp-thumb">
                         <span v-else><img v-if="file.icon" :src="file.icon" :alt="file.name" class="fp-icon"><span class="fp-name">{{ file.name }} ({{ file.filesize }})</span></span>
                     </label>
-                    <button v-if="buttons.includes('delete')" class="fb-delete-file fp-button" @click="deleteFile(file, false, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerDeleteFile'] ?></span></button>
+                    <button type="button" v-if="buttons.includes('delete')" class="fb-delete-file fp-button" @click="deleteFile(file, false, event)"><span><?= $GLOBALS['TL_LANG']['MSC']['filePickerDeleteFile'] ?></span></button>
                 </div>
             </div>
         </div>
