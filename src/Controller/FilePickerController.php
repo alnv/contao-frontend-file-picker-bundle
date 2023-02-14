@@ -91,8 +91,8 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
 
         $objField = null;
 
-        if (\Database::getInstance()->tableExists('tl_catalog') && \Database::getInstance()->fieldExists('fieldname', 'tl_catalog_fields')) {
-            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE pid=? AND fieldname=?')->limit(1)->execute(\Input::post('cid'), \Input::post('name'));
+        if (\Database::getInstance()->tableExists('tl_catalog') && \Database::getInstance()->tableExists('tl_catalog_fields') && \Database::getInstance()->fieldExists('fieldname', 'tl_catalog_fields')) {
+            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE `pid`=? AND `fieldname`=?')->limit(1)->execute(\Input::post('cid'), \Input::post('name'));
         }
 
         if (!$objField || !$objField->numRows) {
