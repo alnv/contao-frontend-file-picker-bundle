@@ -2,4 +2,8 @@
 
 namespace Alnv\ContaoFrontendFilePickerBundle;
 
-class AlnvContaoFrontendFilePickerBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle {}
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class AlnvContaoFrontendFilePickerBundle extends Bundle
+{
+}

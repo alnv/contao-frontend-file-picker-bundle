@@ -2,20 +2,26 @@
 
 namespace Alnv\ContaoFrontendFilePickerBundle\Controller;
 
+use Contao\CoreBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Contao\FormFileUpload;
+use Contao\Input;
+use Contao\StringUtil;
+use Contao\System;
+use Contao\Config;
+use Contao\FilesModel;
+use Contao\Database;
+use Contao\FrontendUser;
+use Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker;
 
-/**
- *
- * @Route("/file-picker", defaults={"_scope"="frontend", "_token_check"=false})
- */
-class FilePickerController extends \Contao\CoreBundle\Controller\AbstractController {
+#[Route(path: 'file-picker', name: 'file-picker-controller', defaults: ['_scope' => 'frontend'])]
+class FilePickerController extends AbstractController
+{
 
-    /**
-     *
-     * @Route("/upload", methods={"POST"}, name="fp-upload")
-     */
-    public function upload() {
+    #[Route(path: '/upload', methods: ["POST"])]
+    public function upload(): JsonResponse
+    {
 
         $arrResponse = [
             'success' => false,
@@ -32,10 +38,10 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
         }
 
         $arrUpload = $this->getUploadSettings();
-        $arrUpload['eval']['uploadFolder'] = \StringUtil::binToUuid($objUploadDir->uuid);
+        $arrUpload['eval']['uploadFolder'] = StringUtil::binToUuid($objUploadDir->uuid);
 
-        $arrAttribute = \FormFileUpload::getAttributesFromDca($arrUpload, \Input::post('name'), null, \Input::post('name'));
-        $objUpload = new \FormFileUpload($arrAttribute);
+        $arrAttribute = FormFileUpload::getAttributesFromDca($arrUpload, Input::post('name'), null, Input::post('name'));
+        $objUpload = new FormFileUpload($arrAttribute);
         $objUpload->validate();
 
         if ($objUpload->hasErrors()) {
@@ -47,28 +53,24 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
             $arrResponse['success'] = true;
             $arrResponse['file'] = $this->getUploads();
         }
-        
-        unset($_SESSION['FILES'][\Input::post('name')]);
+
+        unset($_SESSION['FILES'][Input::post('name')]);
 
         return new JsonResponse($arrResponse);
     }
 
-    /**
-     *
-     * @Route("/fetch-selections", methods={"POST"}, name="fp-fetch-selections")
-     */
-    public function fetchSelections() {
+    #[Route(path: '/fetch-selections', methods: ["POST"])]
+    public function fetchSelections(): JsonResponse
+    {
 
         $this->container->get('contao.framework')->initialize();
 
-        return new JsonResponse((new \Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker($this->getSettings()))->getSelections(\Input::post('values')));
+        return new JsonResponse((new FilePicker($this->getSettings()))->getSelections(Input::post('values')));
     }
 
-    /**
-     *
-     * @Route("/fetch-data", methods={"POST"}, name="fp-fetch-data")
-     */
-    public function fetchData() {
+    #[Route(path: '/fetch-data', methods: ["POST"])]
+    public function fetchData(): JsonResponse
+    {
 
         $this->container->get('contao.framework')->initialize();
 
@@ -78,57 +80,29 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
         }
 
         $arrFiles = [];
-        (new \Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker($this->getSettings()))->getAllFiles($objUploadDir->path, $arrFiles);
+        (new FilePicker($this->getSettings()))->getAllFiles($objUploadDir->path, $arrFiles);
 
         return new JsonResponse($arrFiles);
     }
 
-    protected function getSettings() {
-
-        if (!\Input::post('cid') || !\Input::post('name')) {
-            return [];
-        }
-
-        $objField = null;
-
-        if (\Database::getInstance()->tableExists('tl_catalog') && \Database::getInstance()->tableExists('tl_catalog_fields') && \Database::getInstance()->fieldExists('fieldname', 'tl_catalog_fields')) {
-            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE `pid`=? AND `fieldname`=?')->limit(1)->execute(\Input::post('cid'), \Input::post('name'));
-        }
-
-        if (!$objField || !$objField->numRows) {
-            $objField = \Database::getInstance()->prepare('SELECT * FROM tl_form_field WHERE id=?')->limit(1)->execute(\Input::post('cid'));
-        }
-
-        if (!$objField->numRows) {
-            return [];
-        }
-
-        return [
-            'multiple' => (bool) $objField->multiple,
-            'extensions' => $objField->extensions,
-            'maxSize' => $objField->mSize?:0
-        ];
-    }
-
-    /**
-     *
-     * @Route("/delete", methods={"POST"}, name="fp-delete")
-     */
-    public function delete() {
+    #[Route(path: '/delete', methods: ["POST"])]
+    public function delete(): JsonResponse
+    {
 
         $this->container->get('contao.framework')->initialize();
 
-        $arrResponse = ['delete'=>false];
+        $arrResponse = ['delete' => false];
         $objUploadDir = $this->getUserDir();
+        $strRootDir = System::getContainer()->getParameter('kernel.project_dir');
 
         if (!$objUploadDir) {
             return new JsonResponse($arrResponse);
         }
 
-        $objFile = \FilesModel::findByUuid(\Input::post('uuid'));
+        $objFile = FilesModel::findByUuid(\Input::post('uuid'));
 
         if ($objFile) {
-            unlink(TL_ROOT . '/' . $objFile->path);
+            unlink($strRootDir . '/' . $objFile->path);
             $objFile->delete();
             $arrResponse['delete'] = true;
         }
@@ -136,30 +110,60 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
         return new JsonResponse($arrResponse);
     }
 
-    protected function getUserDir() {
+    protected function getSettings(): array
+    {
 
-        $objMember = \FrontendUser::getInstance();
+        if (!\Input::post('cid') || !\Input::post('name')) {
+            return [];
+        }
+
+        $objField = null;
+
+        if (Database::getInstance()->tableExists('tl_catalog') && Database::getInstance()->tableExists('tl_catalog_fields') && Database::getInstance()->fieldExists('fieldname', 'tl_catalog_fields')) {
+            $objField = Database::getInstance()->prepare('SELECT * FROM tl_catalog_fields WHERE `pid`=? AND `fieldname`=?')->limit(1)->execute(Input::post('cid'), Input::post('name'));
+        }
+
+        if (!$objField || !$objField->numRows) {
+            $objField = Database::getInstance()->prepare('SELECT * FROM tl_form_field WHERE id=?')->limit(1)->execute(Input::post('cid'));
+        }
+
+        if (!$objField->numRows) {
+            return [];
+        }
+
+        return [
+            'multiple' => (bool)$objField->multiple,
+            'extensions' => $objField->extensions,
+            'maxSize' => $objField->mSize ?: 0
+        ];
+    }
+
+    protected function getUserDir()
+    {
+
+        $objMember = FrontendUser::getInstance();
 
         if (!$objMember->id) {
             return null;
         }
 
-        $objHomeDir = \FilesModel::findByUuid($objMember->homeDir);
+        $objHomeDir = FilesModel::findByUuid($objMember->homeDir);
 
         if (!$objHomeDir) {
             return null;
         }
 
-        $objHomeDir = \FilesModel::findByUuid($objMember->homeDir);
+        $objHomeDir = FilesModel::findByUuid($objMember->homeDir);
 
         if (!$objHomeDir) {
             return null;
         }
 
-        return \FilesModel::findByPath($objHomeDir->path . '/' . 'user_files_' . $objMember->id);
+        return FilesModel::findByPath($objHomeDir->path . '/' . 'user_files_' . $objMember->id);
     }
 
-    protected function getUploadSettings() {
+    protected function getUploadSettings(): array
+    {
 
         $arrField = $this->getSettings();
 
@@ -169,19 +173,22 @@ class FilePickerController extends \Contao\CoreBundle\Controller\AbstractControl
                 'mandatory' => true,
                 'storeFile' => true,
                 'doNotOverwrite' => true,
-                'extensions' => $arrField['extensions'] ?: \Config::get('uploadTypes')
+                'extensions' => $arrField['extensions'] ?: Config::get('uploadTypes')
             ]
         ];
     }
 
-    protected function getUploads() {
+    protected function getUploads(): array
+    {
 
-        $arrUpload = $_SESSION['FILES'][\Input::post('name')];
-        $objFile = \FilesModel::findByUuid($_SESSION['FILES'][\Input::post('name')]['uuid']);
+        $arrUpload = $_SESSION['FILES'][Input::post('name')];
+        $objFile = FilesModel::findByUuid($_SESSION['FILES'][Input::post('name')]['uuid']);
+
         if ($objFile) {
             $arrUpload['path'] = $objFile->path;
-            $arrUpload['uuid'] = \StringUtil::binToUuid($objFile->uuid);
+            $arrUpload['uuid'] = StringUtil::binToUuid($objFile->uuid);
         }
+
         return $arrUpload;
     }
 }
