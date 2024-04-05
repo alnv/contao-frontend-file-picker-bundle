@@ -25,6 +25,10 @@ class Catalog
                 foreach ($varValues as $strUuid) {
                     $objFile = FilesModel::findByUuid($strUuid);
 
+                    if (!Validator::isUuid($strUuid) && !Validator::isBinaryUuid($strUuid)) {
+                        continue;
+                    }
+                    
                     if (!$objFile) {
                         continue;
                     }
