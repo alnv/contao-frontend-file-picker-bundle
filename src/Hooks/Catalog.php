@@ -8,6 +8,7 @@ use Contao\FilesModel;
 use Contao\Controller;
 use Contao\StringUtil;
 use Contao\Image;
+use Contao\Validator;
 use Contao\File;
 
 class Catalog
