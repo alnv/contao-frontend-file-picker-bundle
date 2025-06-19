@@ -3,7 +3,6 @@
 namespace Alnv\ContaoFrontendFilePickerBundle\Hooks;
 
 use Alnv\ContaoFrontendFilePickerBundle\Library\Helpers;
-use CatalogManager\CatalogView;
 use Contao\FilesModel;
 use Contao\Controller;
 use Contao\StringUtil;
@@ -14,7 +13,7 @@ use Contao\File;
 class Catalog
 {
 
-    public function render(&$arrCatalog, $strTable, CatalogView $objView)
+    public function render(&$arrCatalog, $strTable, $objView)
     {
 
         foreach ($objView->getCatalogFields() as $arrField) {

@@ -20,7 +20,6 @@ class FilePicker
 
     public function __construct($arrSettings = [])
     {
-
         $this->arrSettings = $arrSettings;
         $this->arrSettings['extensions'] = explode(',', str_replace(' ', '', $this->arrSettings['extensions']));
     }

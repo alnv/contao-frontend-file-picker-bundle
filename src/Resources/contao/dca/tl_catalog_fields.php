@@ -12,6 +12,7 @@ $GLOBALS['TL_DCA']['tl_catalog_fields']['fields']['fpButtons'] = [
     'options' => ['delete'],
     'sql' => "blob NULL"
 ];
+
 $GLOBALS['TL_DCA']['tl_catalog_fields']['fields']['fpSelectionView'] = [
     'inputType' => 'checkbox',
     'eval' => [

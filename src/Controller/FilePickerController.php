@@ -5,7 +5,7 @@ namespace Alnv\ContaoFrontendFilePickerBundle\Controller;
 use Contao\CoreBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
-use Contao\FormFileUpload;
+use Contao\FormUpload;
 use Contao\Input;
 use Contao\StringUtil;
 use Contao\System;
@@ -32,29 +32,30 @@ class FilePickerController extends AbstractController
         $objUploadDir = $this->getUserDir();
 
         if (!$objUploadDir) {
-            header("HTTP/1.0 400 Bad Request");
-            echo $GLOBALS['TL_LANG']['MSC']['uploadGeneralError'];
+
+            \header("HTTP/1.0 400 Bad Request");
+            echo ($GLOBALS['TL_LANG']['MSC']['uploadGeneralError'] ?? '');
             exit;
         }
 
         $arrUpload = $this->getUploadSettings();
         $arrUpload['eval']['uploadFolder'] = StringUtil::binToUuid($objUploadDir->uuid);
+        $varValue = Input::post('name') ?: '';
 
-        $arrAttribute = FormFileUpload::getAttributesFromDca($arrUpload, Input::post('name'), null, Input::post('name'));
-        $objUpload = new FormFileUpload($arrAttribute);
+        $arrAttribute = FormUpload::getAttributesFromDca($arrUpload, $varValue, null, $varValue);
+        $objUpload = new FormUpload($arrAttribute);
         $objUpload->validate();
 
         if ($objUpload->hasErrors()) {
-            header("HTTP/1.0 400 Bad Request");
-            echo $objUpload->getErrorAsString() ?: $GLOBALS['TL_LANG']['MSC']['uploadGeneralError'];
+
+            \header("HTTP/1.0 400 Bad Request");
+            echo $objUpload->getErrorAsString() ?: ($GLOBALS['TL_LANG']['MSC']['uploadGeneralError'] ?? '');
             exit;
 
         } else {
             $arrResponse['success'] = true;
-            $arrResponse['file'] = $this->getUploads();
+            $arrResponse['file'] = $this->getUploads($objUpload->value);
         }
-
-        unset($_SESSION['FILES'][Input::post('name')]);
 
         return new JsonResponse($arrResponse);
     }
@@ -99,7 +100,7 @@ class FilePickerController extends AbstractController
             return new JsonResponse($arrResponse);
         }
 
-        $objFile = FilesModel::findByUuid(\Input::post('uuid'));
+        $objFile = FilesModel::findByUuid(Input::post('uuid'));
 
         if ($objFile) {
             unlink($strRootDir . '/' . $objFile->path);
@@ -113,7 +114,7 @@ class FilePickerController extends AbstractController
     protected function getSettings(): array
     {
 
-        if (!\Input::post('cid') || !\Input::post('name')) {
+        if (!Input::post('cid') || !Input::post('name')) {
             return [];
         }
 
@@ -138,23 +139,20 @@ class FilePickerController extends AbstractController
         ];
     }
 
-    protected function getUserDir()
+    protected function getUserDir(): FilesModel|null
     {
 
         $objMember = FrontendUser::getInstance();
-
         if (!$objMember->id) {
             return null;
         }
 
         $objHomeDir = FilesModel::findByUuid($objMember->homeDir);
-
         if (!$objHomeDir) {
             return null;
         }
 
         $objHomeDir = FilesModel::findByUuid($objMember->homeDir);
-
         if (!$objHomeDir) {
             return null;
         }
@@ -178,13 +176,12 @@ class FilePickerController extends AbstractController
         ];
     }
 
-    protected function getUploads(): array
+    protected function getUploads($strUuid): array
     {
 
-        $arrUpload = $_SESSION['FILES'][Input::post('name')];
-        $objFile = FilesModel::findByUuid($_SESSION['FILES'][Input::post('name')]['uuid']);
+        $arrUpload = [];
 
-        if ($objFile) {
+        if ($objFile = FilesModel::findByUuid($strUuid)) {
             $arrUpload['path'] = $objFile->path;
             $arrUpload['uuid'] = StringUtil::binToUuid($objFile->uuid);
         }

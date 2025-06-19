@@ -1,6 +1,8 @@
 <?php
 
-\System::loadLanguageFile('tl_catalog_fields');
+use Contao\System;
+
+System::loadLanguageFile('tl_catalog_fields');
 
 $GLOBALS['TL_DCA']['tl_form_field']['palettes']['filePicker'] = '{type_legend},type,name,label;{fconfig_legend},mandatory,extensions,multiple,fpButtons,fpSelectionView;{template_legend:hide},customTpl;{invisible_legend:hide},invisible';
 
@@ -14,6 +16,7 @@ $GLOBALS['TL_DCA']['tl_form_field']['fields']['fpButtons'] = [
     'options' => ['delete'],
     'sql' => "blob NULL"
 ];
+
 $GLOBALS['TL_DCA']['tl_form_field']['fields']['fpSelectionView'] = [
     'inputType' => 'checkbox',
     'eval' => [

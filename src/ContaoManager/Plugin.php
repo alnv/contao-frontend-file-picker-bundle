@@ -2,6 +2,8 @@
 
 namespace Alnv\ContaoFrontendFilePickerBundle\ContaoManager;
 
+use Alnv\ContaoFrontendFilePickerBundle\AlnvContaoFrontendFilePickerBundle;
+use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
@@ -16,8 +18,8 @@ class Plugin implements BundlePluginInterface, RoutingPluginInterface
     {
 
         return [
-            BundleConfig::create('Alnv\ContaoFrontendFilePickerBundle\AlnvContaoFrontendFilePickerBundle')
-                ->setLoadAfter(['Contao\CoreBundle\ContaoCoreBundle', 'catalog-manager'])
+            BundleConfig::create(AlnvContaoFrontendFilePickerBundle::class)
+                ->setLoadAfter([ContaoCoreBundle::class, 'Alnv\CatalogManagerBundle\ContaoManager\AlnvCatalogManagerBundle'])
                 ->setReplace(['contao-frontend-file-picker-bundle'])
         ];
     }

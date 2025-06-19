@@ -1,3 +1,9 @@
+<?php
+use Contao\Input;
+use Contao\StringUtil;
+use Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker;
+use Alnv\ContaoFrontendFilePickerBundle\Forms\FormFilePicker;
+?>
 <?php $this->extend('form_row'); ?>
 <?php $this->block('label'); ?>
 <?php if ($this->label): ?>
@@ -14,13 +20,13 @@
 <?php if ($this->hasErrors()): ?>
     <p class="error"><?= $this->getErrorAsString() ?></p>
 <?php endif; ?>
-<?php if ($varValue = \Input::post($this->name)) {
-    $varValue = (new \Alnv\ContaoFrontendFilePickerBundle\Forms\FormFilePicker())->getValue($varValue);
+<?php if ($varValue = Input::post($this->name)) {
+    $varValue = (new FormFilePicker())->getValue($varValue);
     if (!empty($varValue)) {
         $this->varValue = $varValue;
     }
 } ?>
-<?= (new \Alnv\ContaoFrontendFilePickerBundle\Library\FilePicker(
+<?= (new FilePicker(
     [
         'id' => $this->id,
         'name' => $this->name,
@@ -29,7 +35,7 @@
         'extensions' => $this->extensions ?: '',
         'maxSize' => $this->mSize ?: 0,
         'selectionView' => $this->selectionView,
-        'values' => \StringUtil::deserialize($this->varValue, true),
+        'values' => StringUtil::deserialize($this->varValue, true),
         'multiple' => (bool) $this->multiple
     ]
 ))->generate(); ?>
